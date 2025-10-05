@@ -45,8 +45,13 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--sleep",
         type=float,
-        default=0.5,
-        help="Seconds to pause between page requests to stay polite",
+        default=2.0,
+        help="Seconds to pause between requests to stay polite (default: 2.0)",
+    )
+    parser.add_argument(
+        "--skip-details",
+        action="store_true",
+        help="Skip fetching HTML details (court, exchange, ticker) to avoid rate limiting",
     )
     parser.add_argument(
         "--log-level",
@@ -129,24 +134,27 @@ def main(argv: Optional[list[str]] = None) -> int:
                     exchange = ""
                     ticker = ""
 
-                    if cld_id:
+                    if not args.skip_details and cld_id:
                         try:
                             case_details = client.fetch_case_details_from_html(cld_id)
                             district_court = case_details.get("court", "")
                             exchange = case_details.get("exchange", "")
                             ticker = case_details.get("ticker", "")
                             _LOGGER.debug("Fetched details for %s: %s", filing_name, case_details)
+
+                            # Sleep after each detail fetch to be polite
+                            if args.sleep > 0:
+                                time.sleep(args.sleep)
                         except Exception as e:
                             _LOGGER.warning("Failed to fetch HTML details for CLD ID %s: %s", cld_id, e)
                             # Fallback to court_lut_id if HTML fetch fails
                             district_court = str(record.get("courts_lut_id", ""))
+                    else:
+                        # Use court_lut_id when skipping details
+                        district_court = str(record.get("courts_lut_id", ""))
 
                     csv_writer.writerow([filing_name, filing_date, district_court, exchange, ticker])
                     total_records += 1
-
-                    # Sleep between requests to be polite
-                    if args.sleep > 0:
-                        time.sleep(args.sleep)
 
                 # Check if we've reached max pages
                 if args.max_pages and len(seen_pages) >= args.max_pages:
