@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "renee-paper"
+version = "0.1.0"
+description = "Data collection scaffolding for Stanford SCAC filings"
+authors = ["Renee Research <contact@example.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "scac", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.32.0"
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
