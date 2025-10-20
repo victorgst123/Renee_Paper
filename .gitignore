@@ -1,3 +1,4 @@
 .claude/
 *.html
 data/
+__pycache__/

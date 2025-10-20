@@ -1,20 +1,19 @@
-[tool.poetry]
+[project]
 name = "renee-paper"
 version = "0.1.0"
-description = "Data collection scaffolding for Stanford SCAC filings"
-authors = ["Renee Research <contact@example.com>"]
-license = "MIT"
+description = ""
+authors = [
+    {name = "Victor Guo",email = "admin@beulahworks.com"}
+]
 readme = "README.md"
-packages = [
-    { include = "scac", from = "src" }
+requires-python = ">=3.12"
+dependencies = [
+    "requests (>=2.32.5,<3.0.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "tqdm (>=4.67.1,<5.0.0)"
 ]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-requests = "^2.32.0"
-
-[tool.poetry.group.dev.dependencies]
 
 [build-system]
-requires = ["poetry-core>=1.9.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
